@@ -4163,15 +4163,22 @@ function getBossDesc() {
   return ability.desc || state.currentBoss.desc;
 }
 
-function isBossRound() {              // 👈 Hàm tiếp theo bắt đầu ngay
+function isBossRound() {
   if (!FEATURE_FLAGS.boss) return false;
-  return state.winsTotal > 0 && state.winsTotal % CONFIG.BOSS_INTERVAL === 0;
+  if (state.winsTotal === 0) return false;
+  if (state.winsTotal % CONFIG.BOSS_INTERVAL !== 0) return false;
+  
+  // 👇 Chỉ trigger boss 1 LẦN cho mỗi mốc winsTotal
+  if (state.lastBossWinsTotal === state.winsTotal) return false;
+  
+  return true;
 }
 
 function setupBossRound() {
   const boss = BOSS_LIST[state.floor % BOSS_LIST.length];
   state.currentBoss = boss;
   state.isBossRound = true;
+  state.lastBossWinsTotal = state.winsTotal;   // 👈 THÊM DÒNG NÀY
   
   const ability = getBossAbility();
   
@@ -4551,6 +4558,7 @@ let state = {
   eventGoldenDeck: false,
   isBossRound: false,
   currentBoss: null,
+  lastBossWinsTotal: -1,
   achievementsUnlocked: {},
   
   stats: {
@@ -5156,6 +5164,7 @@ function backToLobby() {
   state.gameOver = false;
   state.roundActive = false;
   state.processing = false;
+  state.lastBossWinsTotal = -1;
   document.getElementById('endRoundPanel').classList.remove('active');
   document.getElementById('shopOverlay').classList.remove('active');
   showScreen('lobbyScreen');
