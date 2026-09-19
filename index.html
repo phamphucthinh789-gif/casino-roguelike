@@ -2,10 +2,44 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>🎰 Casino Roguelike</title>
+<meta name="theme-color" content="#0a0a14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Casino RL">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Casino%20Roguelike%22%2C%22short_name%22%3A%22CasinoRL%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23000%22%2C%22theme_color%22%3A%22%230a0a14%22%7D">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* 👇 Tap feedback toàn cục cho mobile */
+  @media (hover: none) and (pointer: coarse) {
+    .btn:active:not(:disabled),
+    .choice-btn:active:not(:disabled),
+    .preset-btn:active,
+    .diff-btn:active,
+    .big-btn:active,
+    .enter-table-btn:active,
+    .tab-btn:active,
+    .bac-btn:active:not(:disabled),
+    .bet-preset:active,
+    .carousel-nav-btn:active,
+    .toggle-btn:active,
+    .danger-btn:active,
+    .pause-btn:active,
+    .confirm-btn:active,
+    .mode-item:active,
+    .close-shop-btn:active,
+    .end-lobby-btn:active,
+    .ach-filter-btn:active,
+    .btn-bet-cancel:active,
+    .btn-bet-start:active {
+      transform: scale(0.94) !important;
+      transition: transform 0.08s ease !important;
+      filter: brightness(1.15);
+    }
+  }
 
   :root {
     --gold: #ffd700;
@@ -17,7 +51,15 @@
     --purple: #9b59b6;
     --cyan: #00d4ff;
     --panel-bg: linear-gradient(145deg, rgba(20,25,40,0.98), rgba(10,12,22,0.98));
-    --tab-h: 68px;
+    --tab-h: 76px;
+  }
+
+  @media (max-width: 768px) {
+    :root { --tab-h: 60px; }
+  }
+
+  body.is-landscape.is-mobile {
+    --tab-h: 56px;
   }
 
   html, body {
@@ -28,6 +70,11 @@
     overflow: hidden;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;           /* 👈 Chặn pull-to-refresh */
+    overscroll-behavior-y: contain;       /* 👈 Chặn bounce scroll */
+    touch-action: manipulation;           /* 👈 Chặn double-tap zoom */
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;          /* 👈 Chặn long-press menu iOS */
   }
 
   body::before {
@@ -508,6 +555,12 @@
     margin: 10px 0;
   }
 
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold) var(--val, 50%), #1a1f2e var(--val, 50%), #1a1f2e 100%);
+  }
+
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 26px; height: 26px;
@@ -516,6 +569,7 @@
     cursor: pointer;
     box-shadow: 0 0 20px rgba(255,215,0,0.9);
     border: 2px solid #fff;
+    margin-top: -8px;   /* 👈 Căn giữa thumb với track 10px */
   }
 
   input[type="range"]::-moz-range-thumb {
@@ -693,7 +747,7 @@
   #tabLobby.active {
     display: flex;
     flex-direction: column;
-    padding-bottom: 200px;    /* 👈 130 → 200 để chừa chỗ cho nút + tab bar */
+    padding-bottom: calc(var(--tab-h) + 100px);
     overflow: hidden;
   }
 
@@ -1030,7 +1084,7 @@
 
   .enter-table-wrapper {
     position: absolute;
-    bottom: 76px;              /* 👈 ĐẨY LÊN TRÊN TAB BAR (76px) */
+    bottom: var(--tab-h);
     left: 0;
     right: 0;
     padding: 20px;
@@ -2842,7 +2896,8 @@
   }
 
   @media (max-width: 768px) {
-    .enter-table-wrapper { bottom: 60px; }   /* 👈 Khớp tab bar mobile */
+    .enter-table-wrapper { bottom: var(--tab-h); }
+    .carousel-track { height: 320px; }   /* 👈 Giảm cho mobile portrait */
     .card { width: 78px; height: 112px; }
     .card-rank { font-size: 1rem; }
     .card-center-big { font-size: 2.5rem; }
@@ -2889,7 +2944,7 @@
     .bet-presets { grid-template-columns: repeat(3, 1fr); }
     .bet-preset.all-in { grid-column: span 3; }
     .setup-panel { padding: 20px 18px; }
-    #tabLobby.active { padding-bottom: 170px; }
+    #tabLobby.active { padding-bottom: calc(var(--tab-h) + 90px); }
   }
   .mine-tile.safe-hint {
     border-color: #ffd700;
@@ -2942,8 +2997,8 @@
     font-size: 0.9rem;
   }
 
-  body.is-portrait.is-mobile .hud-esc-hint {
-    display: none;   /* Ẩn trên mobile dọc, không có ESC */
+  body.is-mobile .hud-esc-hint {
+    display: none !important;   /* Ẩn trên TẤT CẢ mobile, không có ESC */
   }
 
   body.is-portrait.is-mobile .game-area {
@@ -3007,7 +3062,7 @@
   }
 
   body.is-landscape.is-mobile .enter-table-wrapper {
-    bottom: 64px;
+    bottom: var(--tab-h);
     padding: 10px;
   }
 
@@ -3020,9 +3075,28 @@
   /* Landscape: setup screen */
   body.is-landscape.is-mobile .setup-panel {
     max-width: 90vw;
-    padding: 16px 20px;
-    max-height: 85vh;
+    padding: 12px 20px;
+    max-height: 90vh;
     overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    align-items: start;
+  }
+
+  body.is-landscape.is-mobile .setup-panel > .setup-label,
+  body.is-landscape.is-mobile .setup-panel > .chip-display,
+  body.is-landscape.is-mobile .setup-panel > .chip-stack-preview,
+  body.is-landscape.is-mobile .setup-panel > input[type="range"],
+  body.is-landscape.is-mobile .setup-panel > .range-labels,
+  body.is-landscape.is-mobile .setup-panel > .preset-btns,
+  body.is-landscape.is-mobile .setup-panel > .big-btn {
+    grid-column: 1 / -1;
+  }
+
+  body.is-landscape.is-mobile .setup-panel > .difficulty-label,
+  body.is-landscape.is-mobile .setup-panel > .difficulty-row {
+    grid-column: span 1;
   }
 
   body.is-landscape.is-mobile .logo-title {
@@ -3162,6 +3236,51 @@
     font-size: 2rem;
   }
 
+  /* Landscape Hint */
+  .landscape-hint {
+    display: none;
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,215,0,0.15);
+    border: 1px solid rgba(255,215,0,0.4);
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 1px;
+    align-items: center;
+    gap: 8px;
+    z-index: 250;
+    animation: hintPulse 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .landscape-hint-icon {
+    font-size: 1.1rem;
+    animation: hintRotate 2s ease-in-out infinite;
+  }
+
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
+  }
+
+  @keyframes hintRotate {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+  }
+
+  /* Chỉ hiện khi mobile portrait + setup screen active */
+  body.is-portrait.is-mobile #chipSetupScreen.active .landscape-hint {
+    display: flex;
+  }
+
+  body.is-landscape.is-mobile .landscape-hint {
+    display: none !important;
+  }  
+
   /* ============ SAFE AREA (iPhone notch) ============ */
   @supports (padding: max(0px)) {
     body.is-mobile .lobby-header {
@@ -3284,6 +3403,12 @@
       <div class="mode-teaser">🪙</div>
     </div>
     <div class="mode-teasers-label">10 CHẾ ĐỘ CHƠI ĐANG CHỜ</div>
+  </div>
+
+  <!-- 👇 Landscape hint -->
+  <div class="landscape-hint" id="landscapeHint">
+    <div class="landscape-hint-icon">📱↻</div>
+    <div>Xoay ngang để có trải nghiệm tốt hơn</div>
   </div>
 </div>
 
@@ -3887,6 +4012,19 @@ function initAudio() {
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 }
 
+// 👇 Fullscreen on first tap (mobile only)
+let _fullscreenAsked = false;
+function tryFullscreen() {
+  if (!IS_MOBILE || _fullscreenAsked) return;
+  _fullscreenAsked = true;
+  const el = document.documentElement;
+  if (el.requestFullscreen) {
+    el.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
+  } else if (el.webkitRequestFullscreen) {
+    el.webkitRequestFullscreen();
+  }
+}
+
 function beep(freq = 440, duration = 0.1, type = 'sine', vol = 0.06) {
   if (!soundEnabled || !audioCtx) return;
   const osc = audioCtx.createOscillator();
@@ -3900,17 +4038,24 @@ function beep(freq = 440, duration = 0.1, type = 'sine', vol = 0.06) {
   osc.stop(audioCtx.currentTime + duration);
 }
 
+// 👇 Haptic helper — chỉ rung khi mobile + user bật
+function haptic(pattern = 10) {
+  if (!IS_MOBILE) return;
+  if (!state?.settings?.haptic) return;  // có thể thêm setting
+  if (navigator.vibrate) navigator.vibrate(pattern);
+}
+
 const SFX = {
-  deal: () => beep(300, 0.06, 'square', 0.05),
-  chip: () => { beep(900, 0.04, 'triangle'); setTimeout(() => beep(1200, 0.04, 'triangle'), 40); },
-  click: () => beep(600, 0.05, 'square', 0.05),
-  win: () => { beep(523, 0.1); setTimeout(() => beep(659, 0.1), 100); setTimeout(() => beep(784, 0.2), 200); },
-  bigwin: () => { [523,659,784,1047,1319].forEach((f,i) => setTimeout(() => beep(f, 0.12), i*70)); },
-  lose: () => { beep(300, 0.2, 'sawtooth', 0.06); setTimeout(() => beep(200, 0.3, 'sawtooth', 0.06), 150); },
-  spin: () => beep(500, 0.03, 'square', 0.03),
-  boom: () => beep(100, 0.5, 'sawtooth', 0.1),
-  coin: () => { beep(800, 0.08, 'triangle'); setTimeout(() => beep(1000, 0.08, 'triangle'), 80); },
-  dice: () => { for(let i=0;i<4;i++) setTimeout(() => beep(300+i*100, 0.03, 'square'), i*80); }
+  deal: () => { beep(300, 0.06, 'square', 0.05); haptic(8); },
+  chip: () => { beep(900, 0.04, 'triangle'); setTimeout(() => beep(1200, 0.04, 'triangle'), 40); haptic(12); },
+  click: () => { beep(600, 0.05, 'square', 0.05); haptic(6); },
+  win: () => { beep(523, 0.1); setTimeout(() => beep(659, 0.1), 100); setTimeout(() => beep(784, 0.2), 200); haptic([30, 50, 30]); },
+  bigwin: () => { [523,659,784,1047,1319].forEach((f,i) => setTimeout(() => beep(f, 0.12), i*70)); haptic([50, 30, 50, 30, 80]); },
+  lose: () => { beep(300, 0.2, 'sawtooth', 0.06); setTimeout(() => beep(200, 0.3, 'sawtooth', 0.06), 150); haptic([80, 40, 80]); },
+  spin: () => { beep(500, 0.03, 'square', 0.03); },
+  boom: () => { beep(100, 0.5, 'sawtooth', 0.1); haptic([100, 50, 200]); },
+  coin: () => { beep(800, 0.08, 'triangle'); setTimeout(() => beep(1000, 0.08, 'triangle'), 80); haptic(15); },
+  dice: () => { for(let i=0;i<4;i++) setTimeout(() => beep(300+i*100, 0.03, 'square'), i*80); haptic([20, 20, 20, 20]); }
 };
 
 // ============================================
@@ -3989,8 +4134,18 @@ const SPECIAL_EVENTS = [
   { 
     id: 'double', icon: '⚡', name: 'DOUBLE OR NOTHING', weight: 15,
     desc: 'Cược x2, thắng trả x3',
-    apply: () => { state.bet *= 2; state.eventMult = 1.5; },
-    reset: () => { state.eventMult = 1; }
+    apply: () => { 
+      state.eventOriginalBet = state.bet;
+      state.bet *= 2; 
+      state.eventMult = 1.5; 
+    },
+    reset: () => { 
+      if (state.eventOriginalBet) {
+        state.bet = state.eventOriginalBet;
+        state.eventOriginalBet = null;
+      }
+      state.eventMult = 1; 
+    }
   },
   { 
     id: 'golden_deck', icon: '🌟', name: 'GOLDEN DECK', weight: 10,
@@ -4279,6 +4434,7 @@ function getBossPayoutMult() {
 function resetBossState() {
   state.isBossRound = false;
   state.currentBoss = null;
+  _lastBossBadgeKey = '';   // 👈 Reset cache để badge được update lại
 }
 
 // ============================================
@@ -4527,9 +4683,15 @@ const GAME_MODES = [
 // ============================================
 //  STATE
 // ============================================
+// 👇 Timer cho boss banner (clear khi endRound)
+let bossBannerTimer = null;
+
+// 👇 Cache trạng thái boss badge để tránh re-render
+let _lastBossBadgeKey = '';
+
 let state = {
   chips: 1000,
-  dealtCards: new Set(),   // 👈 THÊM: Track lá bài đã deal
+  dealtCards: new Set(),
   souls: 0,
   floor: 1,
   bet: 100,
@@ -4559,6 +4721,7 @@ let state = {
   isBossRound: false,
   currentBoss: null,
   lastBossWinsTotal: -1,
+  eventOriginalBet: null,
   achievementsUnlocked: {},
   
   stats: {
@@ -4580,7 +4743,8 @@ let state = {
   settings: {
     sound: true,
     effects: true,
-    showKbd: true
+    showKbd: true,
+    haptic: true      // 👈 THÊM
   }
 };
 
@@ -4651,6 +4815,7 @@ function selectDiff(diff) {
 
 function goToLobby() {
   initAudio();
+  tryFullscreen();   // 👈 THÊM
   const startingChips = parseInt(chipSlider.value);
   state.chips = startingChips;
   state.stats.bestChips = startingChips;
@@ -4663,6 +4828,7 @@ function goToLobby() {
   state.buffs = {};
   state.loanDebt = 0;        // 👈 RESET NỢ - CHỈ Ở ĐÂY
   state.processing = false;
+  state.lastBossWinsTotal = -1;
 
   SFX.click();
   loadStatsFromStorage();
@@ -4870,6 +5036,65 @@ function prevMode() {
   updateCarouselPosition();
   SFX.click();
 }
+
+// 👇 Swipe gesture cho carousel (mobile)
+(function initCarouselSwipe() {
+  const track = document.getElementById('carouselTrack');
+  if (!track) return;
+  
+  let startX = 0;
+  let startY = 0;
+  let startTime = 0;
+  let isDragging = false;
+  const SWIPE_THRESHOLD = 50;
+  const SWIPE_TIME = 500;   // ms
+  
+  track.addEventListener('touchstart', (e) => {
+    if (!IS_TOUCH) return;
+    if (!document.getElementById('tabLobby').classList.contains('active')) return;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    startTime = Date.now();
+    isDragging = false;
+  }, { passive: true });
+  
+  track.addEventListener('touchmove', (e) => {
+    if (!IS_TOUCH) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    // Nếu di chuyển ngang nhiều hơn dọc → swipe
+    if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+      isDragging = true;
+    }
+  }, { passive: true });
+  
+  track.addEventListener('touchend', (e) => {
+    if (!IS_TOUCH) return;
+    if (!document.getElementById('tabLobby').classList.contains('active')) return;
+    if (!isDragging) return;
+    
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dt = Date.now() - startTime;
+    
+    if (dt > SWIPE_TIME) return;   // quá chậm → không tính swipe
+    if (Math.abs(dx) < SWIPE_THRESHOLD) return;   // quá ngắn
+    
+    if (dx < 0) {
+      // Swipe sang trái → next (wrap-around)
+      nextMode();
+      haptic(10);
+    } else {
+      // Swipe sang phải → prev (wrap-around)
+      prevMode();
+      haptic(10);
+    }
+    isDragging = false;
+  }, { passive: true });
+})();
+
 // ============================================
 //  BET SELECT POPUP
 // ============================================
@@ -5036,7 +5261,11 @@ function resetBestRun() {
     'Xóa kỷ lục?',
     'Toàn bộ thống kê và best run sẽ bị xóa vĩnh viễn.',
     () => {
-      state.stats = { totalRounds: 0, totalWins: 0, bestCombo: 0, bestChips: 0, bestFloor: 1 };
+      state.stats = { 
+        totalRounds: 0, totalWins: 0, bestCombo: 0, bestChips: 0, bestFloor: 1,
+        bossKills: 0, modesPlayed: [], hadDebt: false, 
+        hadBlackjack: false, hadJackpot: false, hadMinesX10: false 
+      };
       saveStatsToStorage();
       renderStats();
       renderLeaderboard();
@@ -5076,8 +5305,9 @@ function toggleKbdSetting() {
 
 function openSettingsFromPause() {
   closePause();
-  backToLobby();          // 👈 Về lobby trước
-  switchTab('Settings');  // 👈 Rồi mới chuyển tab
+  showScreen('lobbyScreen');
+  switchTab('Settings');
+  updateLobbyUI();
 }
 
 // ============================================
@@ -5164,7 +5394,6 @@ function backToLobby() {
   state.gameOver = false;
   state.roundActive = false;
   state.processing = false;
-  state.lastBossWinsTotal = -1;
   document.getElementById('endRoundPanel').classList.remove('active');
   document.getElementById('shopOverlay').classList.remove('active');
   showScreen('lobbyScreen');
@@ -5218,10 +5447,17 @@ function updateHUD(flashChips = false, flashSouls = false) {
   updateBossBadge();
 }
 
-// 👇 NEW: Badge BOSS trên HUD
 function updateBossBadge() {
   const hud = document.querySelector('.hud');
   if (!hud) return;
+  
+  const currentKey = state.isBossRound && state.currentBoss 
+    ? `${state.currentBoss.id}` 
+    : '';
+  
+  // Nếu không đổi → skip hoàn toàn
+  if (currentKey === _lastBossBadgeKey) return;
+  _lastBossBadgeKey = currentKey;
   
   let badge = document.getElementById('hudBoss');
   
@@ -5237,7 +5473,6 @@ function updateBossBadge() {
         animation: bossPulse 1.2s ease-in-out infinite;
         font-weight: 900;
       `;
-      // Chèn sau hud-combo (hoặc sau hud-bet nếu không có combo)
       const combo = document.getElementById('hudCombo');
       const bet = document.querySelector('.hud-bet');
       if (combo && combo.nextSibling) {
@@ -5462,7 +5697,8 @@ function newRound() {
 
   updateHUD();
   // Delay banner 2.5s để không bị che bởi boss intro overlay
-  setTimeout(() => showBossBannerIfNeeded(), 2500);
+  clearTimeout(bossBannerTimer);
+  bossBannerTimer = setTimeout(() => showBossBannerIfNeeded(), 2500);
 
   const router = {
     blackjack: setupBlackjack,
@@ -5482,6 +5718,13 @@ function newRound() {
 function endRound(outcome, detail = {}) {
   state.gameOver = true;
   state.roundActive = false;
+  
+  // 👇 Clear boss banner timer nếu ván kết thúc sớm
+  clearTimeout(bossBannerTimer);
+  
+  // Xóa banner đang hiện (nếu có)
+  const existingBanner = document.getElementById('bossBanner');
+  if (existingBanner) existingBanner.remove();
 
   const diffMult = DIFFICULTY_CONFIG[state.difficulty].mult;
   const bet = detail.bet || state.bet;
@@ -5496,11 +5739,16 @@ function endRound(outcome, detail = {}) {
   const comboMult = getComboMultiplier();
   const eventMult = FEATURE_FLAGS.events ? (state.eventMult || 1) : 1;
   const bossMult = getBossPayoutMult();
-  const stackedMult = comboMult * eventMult * bossMult;
+  const stackedMult = bossMult > 1 
+    ? bossMult                                    // Boss round: chỉ dùng bossMult
+    : comboMult * eventMult;                      // Ván thường: stack combo × event
   const finalMult = Math.min(CONFIG.MAX_MULTIPLIER, stackedMult);
 
   if (outcome === 'win' || outcome === 'jackpot') {
-    // 👇 Tính payout với multiplier stack
+    if (outcome === 'jackpot' && state.currentMode === 'slot') {
+      state.stats.hadJackpot = true;
+    }
+    
     let rawPayout = Math.floor(bet * payoutMult * diffMult * finalMult);
     
     // 👇 Cap payout theo difficulty
@@ -5791,7 +6039,6 @@ function setBlackjackButtons(enabled) {
     <button class="btn btn-primary" ${!enabled ? 'disabled' : ''} onclick="bjHit()">🎴 RÚT${kbd}</button>
     <button class="btn btn-danger" ${!enabled ? 'disabled' : ''} onclick="bjStand()">✋ DỪNG${kbdS}</button>
     <button class="btn btn-gold" ${!enabled ? 'disabled' : ''} onclick="bjDouble()">💎 X2</button>
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 
@@ -5820,10 +6067,15 @@ function bjStand() {
 
 function bjDouble() {
   if (state.gameOver || !state.roundActive) return;
+  if (state.processing) return;
   if (state.playerHand.length !== 2) { toast('⚠️ Chỉ X2 với 2 lá đầu!'); return; }
   if (state.chips < state.bet) { toast('❌ Không đủ chips!'); return; }
-  state.chips -= state.bet;
-  state.bet *= 2;
+  
+  // Trừ thêm 1 lần cược gốc (lần 1 đã trừ trong newRound)
+  const originalBet = state.bet;
+  state.chips -= originalBet;
+  state.bet = originalBet * 2;   // bet mới = tổng cược thực tế
+  
   updateHUD(true);
   SFX.chip();
   state.playerHand.push(state.deck.pop());
@@ -5837,7 +6089,8 @@ function playDealerBlackjack() {
   renderBlackjack(true);
   let min = state.buffs.dealerWeak ? 18 : DIFFICULTY_CONFIG[state.difficulty].dealerMin;
   
-  // 👇 THE SHARK: dealerMin cao hơn
+  if (state.eventDealerBoost) min += state.eventDealerBoost;
+  
   const ability = getBossAbility();
   if (ability.dealerMin) min = Math.max(min, ability.dealerMin);
   
@@ -5882,11 +6135,10 @@ function finishBlackjack() {
 // ============================================
 //  MODE 2: COIN FLIP
 // ============================================
-function setupCoinflip() {
-  const ability = getBossAbility();
-  const required = ability.extraPicks || ability.triplePicks || 1;
-  state.modeState = { choice: null, streak: 0, required };
+function renderCoinflipUI() {
   const area = document.getElementById('gameArea');
+  const ms = state.modeState;
+  const required = ms.required;
   const bossBadge = required > 1 
     ? `<div style="color:#e74c3c;font-weight:700;margin-bottom:10px;">⚠️ Cần đoán đúng ${required} lần liên tiếp (payout x${Math.pow(2, required)})</div>` 
     : '';
@@ -5895,7 +6147,7 @@ function setupCoinflip() {
     <div class="game-subtitle">Đoán mặt — Thắng x2</div>
     ${bossBadge}
     <div style="text-align:center;margin:10px 0;color:#ffd700;font-size:1.1rem;font-weight:900;">
-      ${required > 1 ? `Lần ${state.modeState.streak + 1}/${required}` : ''}
+      ${required > 1 ? `Lần ${ms.streak + 1}/${required}` : ''}
     </div>
     <div style="margin:15px 0; perspective:1000px;">
       <div class="coin" id="coinEl">?</div>
@@ -5906,9 +6158,16 @@ function setupCoinflip() {
     </div>
   `;
   document.getElementById('controls').innerHTML = `
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
+
+function setupCoinflip() {
+  const ability = getBossAbility();
+  const required = ability.extraPicks || ability.triplePicks || 1;
+  state.modeState = { choice: null, streak: 0, required };
+  renderCoinflipUI();
+}
+
 function coinChoose(choice) {
   if (state.gameOver || !state.roundActive || state.modeState.choice) return;
   state.modeState.choice = choice;
@@ -5936,7 +6195,7 @@ function coinChoose(choice) {
       } else {
         toast(`✅ Đúng! Còn ${ms.required - ms.streak} lần`);
         ms.choice = null;
-        setTimeout(() => setupCoinflip(), 1200);
+        setTimeout(() => renderCoinflipUI(), 1200);
       }
     } else {
       endRound('lose', { bet: state.bet, title: `❌ SAI LẦN ${ms.streak + 1}!` });
@@ -5985,7 +6244,6 @@ function setupDice() {
   renderDiceFace(1, 'diceEl');
   if (isTwoDice || isSum) renderDiceFace(1, 'diceEl2');
   document.getElementById('controls').innerHTML = `
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 function renderDiceFace(num, elId = 'diceEl') {
@@ -6096,7 +6354,6 @@ function setupWheel() {
   `;
   document.getElementById('controls').innerHTML = `
     <button class="btn btn-gold" id="spinBtn" onclick="spinWheel()">🎡 QUAY</button>
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 function spinWheel() {
@@ -6104,26 +6361,58 @@ function spinWheel() {
   state.modeState.spinning = true;
   const wheel = document.getElementById('wheelEl');
   document.getElementById('spinBtn').disabled = true;
+  
+  const ability = getBossAbility();
   const segments = getWheelSegments();
   const N = segments.length;
   const anglePer = 360 / N;
-  const targetIdx = Math.floor(Math.random() * N);
-  const extraSpins = 5 + Math.floor(Math.random() * 3);
-  const targetAngle = extraSpins * 360 + (N - targetIdx) * anglePer - anglePer/2;
-  wheel.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
-  wheel.style.transform = `rotate(${targetAngle}deg)`;
-  SFX.spin();
-  // 👇 Mobile: giảm tần suất sound
-  const spinInterval = IS_MOBILE ? 250 : 100;
-  const spinSound = setInterval(() => SFX.spin(), spinInterval);
-  setTimeout(() => clearInterval(spinSound), 5000);
-  setTimeout(() => {
-    state.modeState.spinning = false;
-    const seg = segments[targetIdx];
-    if (seg.mult === 0) endRound('lose', { bet: state.bet, title: '💀 XUI!' });
-    else if (seg.mult >= 5) endRound('jackpot', { bet: state.bet, payoutMult: seg.mult });
-    else endRound('win', { bet: state.bet, payoutMult: seg.mult });
-  }, 5200);
+  
+  const spinCount = ability.spinTwice ? 2 : 1;
+  let totalMult = 0;
+  let spinResults = [];
+  let currentSpin = 0;
+  
+  function doSpin() {
+    currentSpin++;
+    const targetIdx = Math.floor(Math.random() * N);
+    const extraSpins = 5 + Math.floor(Math.random() * 3);
+    
+    wheel.style.transition = 'none';
+    wheel.style.transform = `rotate(0deg)`;
+    void wheel.offsetWidth;
+    wheel.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    
+    const targetAngle = extraSpins * 360 + (N - targetIdx) * anglePer - anglePer/2;
+    wheel.style.transform = `rotate(${targetAngle}deg)`;
+    
+    SFX.spin();
+    const spinInterval = IS_MOBILE ? 250 : 100;
+    const spinSound = setInterval(() => SFX.spin(), spinInterval);
+    setTimeout(() => clearInterval(spinSound), 5000);
+    
+    setTimeout(() => {
+      const seg = segments[targetIdx];
+      spinResults.push(seg);
+      totalMult += seg.mult;
+      
+      if (currentSpin < spinCount) {
+        setTimeout(doSpin, 800);
+      } else {
+        state.modeState.spinning = false;
+        log('WHEEL', `Spins: ${spinResults.map(s => 'x' + s.mult).join(' + ')} = x${totalMult}`, null, 'critical');
+        
+        if (totalMult === 0) {
+          endRound('lose', { bet: state.bet, title: '💀 XUI!' });
+        } else if (totalMult >= 5) {
+          endRound('jackpot', { bet: state.bet, payoutMult: totalMult });
+        } else {
+          endRound('win', { bet: state.bet, payoutMult: totalMult });
+        }
+      }
+    }, 5200);
+  }
+  
+  doSpin();
 }
 // ============================================
 //  MODE 5: SLOT
@@ -6191,7 +6480,6 @@ function setupSlot() {
   `;
   document.getElementById('controls').innerHTML = `
     <button class="btn btn-gold" id="slotBtn" onclick="spinSlot()">🎰 QUAY</button>
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 
@@ -6325,7 +6613,6 @@ function setupHilo() {
   };
   renderHilo();
   document.getElementById('controls').innerHTML = `
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 
@@ -6445,7 +6732,6 @@ function setupLucky() {
     <div id="luckyResult" style="text-align:center;font-size:1.1rem;margin-top:15px;"></div>
   `;
   document.getElementById('controls').innerHTML = `
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 function luckyChoose(num) {
@@ -6454,8 +6740,6 @@ function luckyChoose(num) {
   if (ms.picked.includes(num)) return;
   
   ms.picked.push(num);
-  const btn = event?.target;
-  if (btn) btn.disabled = true;
   
   if (ms.picked.length < ms.picksAllowed) {
     toast(`Đã chọn ${ms.picked.length}/${ms.picksAllowed}`);
@@ -6487,11 +6771,10 @@ function luckyChoose(num) {
 function setupWar() {
   state.dealtCards.clear();   // 👈 THÊM
   const deck = createStandardDeck();
-  state.modeState = { deck };
+  state.modeState = { deck, warBet: state.bet };
   renderWar();
   document.getElementById('controls').innerHTML = `
     <button class="btn btn-gold" onclick="warDraw()">⚔️ RÚT BÀI</button>
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 
@@ -6529,62 +6812,69 @@ function warDraw() {
       if (ability.twoWars) {
         const wins = (state.modeState.warWins || 0) + 1;
         state.modeState.warWins = wins;
-        if (wins >= 2) {
-          resultEl.innerHTML = `<span style="color:#2ecc71;font-weight:900;">🔥 2/2 THẮNG!</span>`;
-          endRound('win', { bet: state.bet, payoutMult: 4 });
-        } else {
+          if (wins >= 2) {
+            resultEl.innerHTML = `<span style="color:#2ecc71;font-weight:900;">🔥 2/2 THẮNG!</span>`;
+            endRound('win', { bet: state.modeState.warBet || state.bet, payoutMult: 2 });
+            // ❌ KHÔNG có endRound('lose') ở đây
+          } else {
           resultEl.innerHTML = `<span style="color:#2ecc71;font-weight:900;">🔥 1/2 — Đánh tiếp!</span>`;
           setTimeout(() => {
             renderWar();
             document.getElementById('controls').innerHTML = `
               <button class="btn btn-gold" onclick="warDraw()">⚔️ RÚT TIẾP (2/2)</button>
-              <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
             `;
           }, 1500);
         }
         return;
       }
       resultEl.innerHTML = `<span style="color:#2ecc71;font-weight:900;">🎉 BẠN THẮNG!</span>`;
-      endRound('win', { bet: state.bet, payoutMult: 2 });
+      endRound('win', { bet: state.modeState.warBet || state.bet, payoutMult: 2 });
     } else if (d.value > p.value) {
       resultEl.innerHTML = `<span style="color:#e74c3c;font-weight:900;">😢 DEALER THẮNG!</span>`;
-      endRound('lose', { bet: state.bet });
+      endRound('lose', { bet: state.modeState.warBet || state.bet });
     } else {
       // Hòa — check boss (dùng ability đã khai báo ở trên)
       if (ability.tieLose) {
         resultEl.innerHTML = `<span style="color:#e74c3c;font-weight:900;">🦈 HÒA = THUA!</span>`;
-        endRound('lose', { bet: state.bet, title: '🦈 SHARK: Hòa = Thua!' });
+        endRound('lose', { bet: state.modeState.warBet || state.bet, title: '🦈 SHARK: Hòa = Thua!' });
         return;
       }
       if (ability.tieWin) {
         resultEl.innerHTML = `<span style="color:#2ecc71;font-weight:900;">🃏 HÒA = THẮNG!</span>`;
-        endRound('win', { bet: state.bet, payoutMult: 2 });
+        endRound('win', { bet: state.modeState.warBet || state.bet, payoutMult: 2 });
         return;
       }
       
       resultEl.innerHTML = `<span style="color:#f39c12;font-weight:900;">⚔️ WAR! Chơi lại gấp đôi!</span>`;
       
       // 👇 Cap bet không vượt chips
-      const newBet = state.bet * 2;
-      if (newBet > state.chips) {
+      const currentWarBet = state.modeState.warBet || state.bet;
+      const newBet = currentWarBet * 2;
+      
+      // Cần trừ thêm phần chênh lệch (currentWarBet) khỏi chips cho lần War này
+      const extraCost = currentWarBet;
+      if (extraCost > state.chips) {
         toast('⚠️ Không đủ chips để War! Hoàn cược.');
         setTimeout(() => {
-          state.chips += state.bet;
+          // Hoàn lại tổng đã cược
+          state.chips += currentWarBet;
+          state.modeState.warBet = 0;
           endRound('push', { bet: 0, title: '⚔️ HÒA (hết chips)' });
         }, 1500);
         return;
       }
       
+      // Trừ thêm phần cược cho lần War
+      state.chips -= extraCost;
       toast('⚔️ WAR! Cược x2');
-      state.bet = newBet;
+      state.modeState.warBet = newBet;   // Lưu riêng (tổng cược hiện tại)
       state.roundActive = true;
       state.gameOver = false;
-      updateHUD();
+      updateHUD(true);
       setTimeout(() => {
         renderWar();
         document.getElementById('controls').innerHTML = `
           <button class="btn btn-gold" onclick="warDraw()">⚔️ RÚT TIẾP (x2)</button>
-          <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
         `;
       }, 1500);
     }
@@ -6621,7 +6911,6 @@ function setupBaccarat() {
     <div id="bacResult" style="text-align:center;margin-top:15px;font-size:0.95rem;"></div>
   `;
   document.getElementById('controls').innerHTML = `
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 
@@ -6733,7 +7022,6 @@ function setupMines() {
   renderMines();
   document.getElementById('controls').innerHTML = `
     <button class="btn btn-gold" id="minesCashout" onclick="minesCashout()" disabled>💰 RÚT (x1.0)</button>
-    <button class="btn btn-purple" onclick="openShop()">🛒 SHOP</button>
   `;
 }
 
@@ -6824,10 +7112,13 @@ function minesCashout() {
   const ms = state.modeState;
   if (!ms.active || ms.gemsFound === 0) return;
   ms.active = false;
+  
+  if (ms.multiplier >= 10) state.stats.hadMinesX10 = true;
+  
   const totalWin = Math.floor(state.bet * ms.multiplier);
   state.chips += totalWin;
   
-  // 👇 THÊM: Trả nợ 20%
+  // 👇 THÊM: Trả nợ 20% (giống hiloCashout)
   if (state.loanDebt > 0) {
     const percentPay = Math.floor(totalWin * 0.2);
     const payAmount = Math.min(state.loanDebt, percentPay);
@@ -6858,16 +7149,10 @@ function minesCashout() {
   saveStatsToStorage();
   setTimeout(() => showEndPanel(`💰 CASHOUT x${ms.multiplier.toFixed(2)}!`, totalWin - state.bet, soulDelta, 'win', state.bet), 500);
 }
-
 // ============================================
 //  SHOP
 // ============================================
 const BUFFS_DATA = [
-  { id: 'lucky', icon: '🍀', name: 'MAY MẮN', desc: '+10% cơ hội thắng ở mọi mode', cost: 10, rarity: 'common' },
-  { id: 'insurance', icon: '🛡️', name: 'BẢO HIỂM', desc: 'Thua 1 ván hoàn 50% cược', cost: 15, rarity: 'common' },
-  { id: 'doubleSoul', icon: '👻', name: 'SOUL X2', desc: 'Nhận gấp đôi Souls khi thắng', cost: 20, rarity: 'rare' },
-  { id: 'reroll', icon: '🔄', name: 'REROLL', desc: 'Được chơi lại 1 lần/ván', cost: 25, rarity: 'rare' },
-  { id: 'jackpotBoost', icon: '💎', name: 'JACKPOT+', desc: '+50% tiền thắng jackpot', cost: 35, rarity: 'rare' },
   { id: 'dealerWeak', icon: '🏆', name: 'NHÀ CÁI YẾU', desc: 'Dealer blackjack rút đến 18', cost: 40, rarity: 'legendary' },
   { id: 'loan', icon: '💸', name: 'VAY CHIPS', desc: '+200 chips ngay. Miễn phí!', cost: 0, rarity: 'legendary', special: 'loan' }
 ];
